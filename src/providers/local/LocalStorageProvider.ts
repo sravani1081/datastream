@@ -92,14 +92,14 @@ export class LocalStorageProvider implements StorageProvider {
   async logAuditEvent(event: Omit<AuditEvent, 'id' | 'createdAt' | 'updatedAt'>): Promise<AuditEvent> {
     const logs = await this.getAuditEvents();
     const now = new Date().toISOString();
-    const newLog: AuditEvent = {
+    const newLog = {
       ...event,
       id: `aud-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
       createdAt: now,
       updatedAt: now,
-    };
+    } as AuditEvent;
     logs.unshift(newLog);
-    this.setItem(STORAGE_KEYS.AUDIT_LOGS, logs.slice(0, 500)); // limit to 500 logs
+    this.setItem(STORAGE_KEYS.AUDIT_LOGS, logs.slice(0, 500));
     return newLog;
   }
 
