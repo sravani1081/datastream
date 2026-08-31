@@ -39,12 +39,12 @@ export class LocalDataSourceProvider implements DataSourceProvider {
   async createSource(source: Omit<DataSource, 'id' | 'createdAt' | 'updatedAt'>): Promise<DataSource> {
     const sources = this.getStorage();
     const now = new Date().toISOString();
-    const newSource: DataSource = {
+    const newSource = {
       ...source,
       id: `src-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
       createdAt: now,
       updatedAt: now,
-    };
+    } as DataSource;
     sources.unshift(newSource);
     this.saveStorage(sources);
     return newSource;
@@ -59,7 +59,7 @@ export class LocalDataSourceProvider implements DataSourceProvider {
       ...sources[idx],
       ...updates,
       updatedAt: new Date().toISOString(),
-    };
+    } as DataSource;
     sources[idx] = updated;
     this.saveStorage(sources);
     return updated;
@@ -76,7 +76,6 @@ export class LocalDataSourceProvider implements DataSourceProvider {
     const source = await this.getSourceById(sourceId);
     if (!source) return [];
 
-    // Synthetic preview record generator for local testing
     return Array.from({ length: limit }).map((_, i) => ({
       row_id: i + 1,
       player_id: `ply_${1000 + i}`,
