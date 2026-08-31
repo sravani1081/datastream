@@ -2,7 +2,7 @@
 
 export type EntityId = string;
 
-export interface BaseEntity {
+export interface BaseEntity extends Record<string, unknown> {
   id: EntityId;
   createdAt: string;
   updatedAt: string;

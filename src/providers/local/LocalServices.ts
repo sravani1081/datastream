@@ -42,10 +42,6 @@ export class LocalAnalyticsProvider implements AnalyticsProvider {
 }
 
 export class LocalMonitoringProvider implements MonitoringProvider {
-  private logsKey = 'datastream_logs_v1';
-  private alertRulesKey = 'datastream_alert_rules_v1';
-  private alertsKey = 'datastream_alerts_v1';
-
   async getLogs(filter?: { projectId?: EntityId; pipelineId?: EntityId; severity?: string; search?: string; limit?: number }): Promise<SystemLog[]> {
     const defaultLogs: SystemLog[] = Array.from({ length: 25 }).map((_, i) => ({
       id: `log-${i + 1}`,
@@ -78,7 +74,7 @@ export class LocalMonitoringProvider implements MonitoringProvider {
       id: `log-${Date.now()}`,
       createdAt: now,
       updatedAt: now,
-    };
+    } as SystemLog;
   }
 
   async getAlertRules(projectId?: EntityId): Promise<AlertRule[]> {
@@ -128,7 +124,7 @@ export class LocalExportProvider implements ExportProvider {
       completedAt: now,
       createdAt: now,
       updatedAt: now,
-    };
+    } as ExportJob;
   }
 
   async executeExport(jobId: EntityId): Promise<string> {

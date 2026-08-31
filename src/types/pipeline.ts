@@ -1,6 +1,6 @@
 // Visual Pipeline Builder & Execution Engine Types
 
-import { EntityId } from './domain';
+import { EntityId, BaseEntity } from './domain';
 
 export type NodeType =
   | 'Source'
@@ -29,61 +29,40 @@ export interface NodePosition {
 }
 
 export interface PipelineNodeConfig {
-  // Filter Config
-  filterExpression?: string; // e.g. "level >= 5 AND score > 100"
+  filterExpression?: string;
   filterField?: string;
   filterOperator?: '==' | '!=' | '>' | '>=' | '<' | '<=' | 'contains' | 'regex' | 'in';
   filterValue?: string | number | boolean;
-
-  // Map / Transform Config
-  mapScript?: string; // JavaScript mapping expression
-  transformFieldMap?: Record<string, string>; // { "oldName": "newName" }
+  mapScript?: string;
+  transformFieldMap?: Record<string, string>;
   castRules?: Record<string, 'string' | 'number' | 'boolean' | 'date'>;
   calculatedFields?: Array<{ name: string; expression: string }>;
-
-  // Aggregate Config
   groupByFields?: string[];
   aggregations?: Array<{
     field: string;
     op: 'count' | 'sum' | 'avg' | 'min' | 'max' | 'p50' | 'p90' | 'p99';
     alias: string;
   }>;
-
-  // Window Config
   windowType?: 'tumbling' | 'sliding' | 'session';
   windowSizeSeconds?: number;
   slideSizeSeconds?: number;
   sessionGapSeconds?: number;
   timestampField?: string;
-
-  // Join Config
   joinType?: 'inner' | 'left' | 'right' | 'full';
   leftKey?: string;
   rightKey?: string;
   rightSourceId?: EntityId;
-
-  // Deduplicate Config
   dedupKeys?: string[];
   dedupKeep?: 'first' | 'last';
-
-  // Sort Config
   sortField?: string;
   sortDirection?: 'asc' | 'desc';
-
-  // Sample Config
-  sampleRateFraction?: number; // e.g. 0.1 for 10%
+  sampleRateFraction?: number;
   sampleSeed?: number;
-
-  // Validate & Quality Check Config
   validationRulesId?: EntityId;
   rejectAction?: 'drop' | 'quarantine' | 'alert';
-
-  // Enrich Config
   enrichLookupTableId?: EntityId;
   enrichJoinKey?: string;
   enrichFieldsToInclude?: string[];
-
-  // Output Config
   outputDatasetId?: EntityId;
   outputTopicId?: EntityId;
   outputFormat?: 'CSV' | 'JSON' | 'NDJSON' | 'Stream';
@@ -95,8 +74,8 @@ export interface PipelineNode {
   label: string;
   position: NodePosition;
   config: PipelineNodeConfig;
-  inputs: EntityId[]; // Input port/edge IDs
-  outputs: EntityId[]; // Output port/edge IDs
+  inputs: EntityId[];
+  outputs: EntityId[];
   status?: 'idle' | 'running' | 'completed' | 'error';
   executionMetrics?: {
     recordsIn: number;

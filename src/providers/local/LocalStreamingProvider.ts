@@ -41,12 +41,12 @@ export class LocalStreamingProvider implements StreamingProvider {
   async createTopic(topic: Omit<Topic, 'id' | 'createdAt' | 'updatedAt'>): Promise<Topic> {
     const topics = this.getTopicsRaw();
     const now = new Date().toISOString();
-    const newTopic: Topic = {
+    const newTopic = {
       ...topic,
       id: `top-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
       createdAt: now,
       updatedAt: now,
-    };
+    } as Topic;
     topics.unshift(newTopic);
     this.saveTopicsRaw(topics);
     return newTopic;
